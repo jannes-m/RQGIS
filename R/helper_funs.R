@@ -115,87 +115,46 @@ execute_cmds <- function(processing_name = "",
   system("batch_cmd.cmd", intern = intern)
 }
 
-# check_apps should be used within set_env
-check_apps <- function(osgeo4w_root = NULL) {
+#' @title Checking paths to QGIS applications on Windows
+#' @details \code{check_apps} checks if all the necessary applications (QGIS,
+#'   Python27, Qt4, GDAL, GRASS, msys, SAGA) are installed in the correct
+#'   locations.
+#' @param osgeo4w_root Path to the root directory of the OSGeo4W-installation,
+#'   usually C:/OSGeo4W64 or C:/OSGeo4w32.
+#' @return The function returns a list with the paths to all the necessary
+#'   QGIS-applications.
+#'  @examples 
+#' \dontrun{
+#' check_apps("C:/OSGeo4W64)
+#' }
+#' @author Jannes Muenchow, Patrick Schratz
+check_apps <- function(osgeo4w_root) {
     
-    osgeo4w_root_apps <- paste0(osgeo4w_root, "/apps")
-
-    # check qgis
-    if (any(grepl("qgis", dir(osgeo4w_root_apps)))) {
-        qgis_root <- paste0(osgeo4w_root_apps, "qgis")
-        qgis_root <- paste0("qgis path: ", qgis_root)
-    }
-    else {
-        stop("There is no 'qgis' folder in ", osgeo4w_root_apps, ". ",
-             "Please install QGIS using the 'OSGEO4W' advanced ", 
-             "installation routine.")
-    }
+    path_apps <- paste0(osgeo4w_root, "/apps")
     
-    # check Python27
-    if (any(grepl("Python27", dir(osgeo4w_root_apps)))) {
-        Python27_root <- paste0(osgeo4w_root_apps, "Python27")
-        Python27_root = paste0("Python27 path: ", Python27_root)
-    }
-    else {
-        stop("There is no 'Python27' folder in ", osgeo4w_root_apps, ". ",
-             "Please install Python27 using the 'OSGEO4W' advanced ", 
-             "installation routine.")
-    }    
-    
-    # check Qt4
-    if (any(grepl("Qt4", dir(osgeo4w_root_apps)))) {
-        Qt4_root <- paste0(osgeo4w_root_apps, "Qt4")
-        Qt4_root = paste0("Qt4 path: ", Qt4_root)
-    }
-    else {
-        stop("There is no 'Qt4' folder in ", osgeo4w_root_apps, ". ",
-             "Please install Qt4 using the 'OSGEO4W' advanced ", 
-             "installation routine.")
-    }
-    
-    # check gdal
-    if (any(grepl("gdal", dir(osgeo4w_root_apps)))) {
-        gdal_root <- paste0(osgeo4w_root_apps, "gdal")
-        gdal_root = paste0("GDAL path: ", gdal_root)
-    }
-    else { 
-        message("There is no 'GDAL' folder in ", osgeo4w_root_apps, ". ",
-                "You might want to install GDAL using the 'OSGEO4W' advanced ", 
-                "installation routine.")
-    }
-    
-    # check grass
-    if (any(grepl("grass", dir(osgeo4w_root_apps)))) {
-        grass_root <- paste0(osgeo4w_root_apps, "grass")
-        grass_root <- paste0("grass path: ", grass_root)
-    }
-    else { 
-        message("There is no 'grass' folder in ", osgeo4w_root_apps, ". ",
-                "You might want to install GRASS using the 'OSGEO4W' advanced ", 
-                "installation routine.")
-    }
-    
-    # check msys
-    if (any(grepl("msys", dir(osgeo4w_root_apps)))) {
-        msys_root <- paste0(osgeo4w_root_apps, "msys")
-        msys_root <- paste0("msys path: ", msys_root)
-    }
-    else {
-        message("There is no 'msys' folder in ", osgeo4w_root_apps, ". ",
-                "You might want to install msys using the 'OSGEO4W' advanced ", 
-                "installation routine.")
-    }
-    
-    # check SAGA
-    if (any(grepl("saga", dir(osgeo4w_root_apps)))) {
-        saga_root <- paste0(osgeo4w_root_apps, "saga")
-        saga_root <- paste0("saga path: ", saga_root)
-    }
-    else {
-        message("There is no 'saga' folder in ", osgeo4w_root_apps, ". ",
-                "You might want to install SAGA using the 'OSGEO4W' advanced ", 
-                "installation routine.")
-    }
+    # define apps to check
+    apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
+    out <- lapply(apps, function(app) {
+        if (any(grepl(app, dir(path_apps)))) {
+            path <- paste(path_apps, app, sep = "/")
+        }
+        else {
+            path <- NULL
+            txt <- paste0("There is no ", app, "folder in ",
+                          path_apps, ".")
+            ifelse(app %in% c("qgis", "Python27", "Qt4"),
+                   stop(txt, " Please install ", app, 
+                        " using the 'OSGEO4W' advanced installation", 
+                        " routine."),
+                   message(txt, " You might want to install ", app,
+                           " using the 'OSGEO4W' advanced installation", 
+                           " routine."))
+        }
+        gsub("//|\\\\", "/", path)
+    })
+    names(out) <- apps
+    # return your result
+    out
 }
 
 ### not functional
@@ -283,7 +242,7 @@ check_apps_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys",
         
         }
     else {
-        stop("It seems your not running a MAC but either Windows or Linux. 
+        stop("It seems you are not running a MAC but either Windows or Linux. 
              Please use functions according to your system")
         }
     }
@@ -291,10 +250,12 @@ check_apps_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys",
 
 set_env <- function(path = NULL) {
     
-    # path <- "C:/OSGeo4W64/"
+    path <- "C:/OSGeo4W64/"
     
     if (!is.null(path)) {
-        check_apps(osgeo4w_root = path)
+        out <- list(root = path)
+        out <- c(out, check_apps(osgeo4w_root = path))
+        
         
     } else {
         # raw command
