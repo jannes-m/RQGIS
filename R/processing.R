@@ -15,9 +15,7 @@
 #' find_algorithms(search_term = "add")
 #' @export
 find_algorithms <- function(search_term = "",
-                            osgeo4w_root =
-                              ifelse(Sys.info()["sysname"] == "Windows",
-                                     find_root(), NULL)) {
+                            osgeo4w_root = find_root()) {
 
   if (is.null(osgeo4w_root)) {
     stop("Please specify the path to your OSGeo4W-installation!")

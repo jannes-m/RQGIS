@@ -25,10 +25,16 @@ find_root <- function(root_name = "OSGeo4W") {
                grep(root_name, dir("C:/Program Files (x86)"), value = TRUE)[1])
     }
   }
-  if (is.null(osgeo4w_root)) {
-    stop("Sorry, I could not find ", root_name, " on your system!
-         Please provide the path to OSGeo4W yourself!")
+  
+  if (Sys.info()["sysname"] == "Darwin") {
+      osgeo4w_root = "/applications/QGIS.app/Contents"
   }
+  
+  if (is.null(osgeo4w_root)) {
+      stop("Sorry, I could not find ", root_name, " on your system!
+           Please provide the path to OSGeo4W yourself!")
+  }
+  
   osgeo4w_root
 }
 
@@ -37,43 +43,78 @@ find_root <- function(root_name = "OSGeo4W") {
 #'   commands.
 #' @param osgeo4w_root Path to the OSGeo folder or QGIS folder
 #' @author Jannes Muenchow
-read_cmds <- function(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
-                                            find_root(), NULL)) {
+read_cmds <- function(osgeo4w_root =find_root()) {  
+    
   if (is.null(osgeo4w_root)) {
     stop("Please specify the path to your OSGeo4W-installation!")
   }
-
-  # load raw Python file
-  py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
-  py_cmd <- readLines(py_cmd)
-  # change paths if necessary
-  if (osgeo4w_root != "C:\\OSGeo4W64") {
-    py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
-                         osgeo4w_root, "\\apps\\qgis'", "True)")
-    py_cmd[15] <- paste0("sys.path.append(r'", osgeo4w_root,
-                         "\\apps\\qgis\\python\\plugins')")
-  }
-
-  # load windows batch command
-  cmd <- system.file("win", "init.cmd", package = "RQGIS")
-  cmd <- readLines(cmd)
-  # check osgewo4w_root
-
-  # check if GRASS path is correct and which version is available on the system
-  vers <- dir(paste0(osgeo4w_root, "\\apps\\grass"))
-  if (length(vers) < 1) {
-    stop("Please install at least one GRASS version under '../OSGeo4W/apps/'!")
-  }
-  # check if grass-7.0.3 is available
-  if (!any(grepl("grass-7.0.3", vers))) {
-    # if not, simply use the older version
-    cmd <- gsub("grass.*\\d", vers[1], cmd)
-  }
-
-  # return your result
-  list("cmd" = cmd,
-       "py_cmd" = py_cmd)
-}
+  
+    if (Sys.info()["sysname"] == "Windows") {
+        # load raw Python file
+        py_cmd <- system.file("python", "raw_py.py", package = "RQGIS")
+        py_cmd <- readLines(py_cmd)
+        # change paths if necessary
+        if (osgeo4w_root != "C:\\OSGeo4W64") {
+            py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
+                                 osgeo4w_root, "\\apps\\qgis'", "True)")
+            py_cmd[15] <- paste0("sys.path.append(r'", osgeo4w_root,
+                                 "\\apps\\qgis\\python\\plugins')")
+        }
+        
+        # load windows batch command
+        cmd <- system.file("win", "init.cmd", package = "RQGIS")
+        cmd <- readLines(cmd)
+        # check osgewo4w_root
+        
+        # check if GRASS path is correct and which version is available on the system
+        vers <- dir(paste0(osgeo4w_root, "\\apps\\grass"))
+        if (length(vers) < 1) {
+            stop("Please install at least one GRASS version under '../OSGeo4W/apps/'!")
+        }
+        # check if grass-7.0.3 is available
+        if (!any(grepl("grass-7.0.3", vers))) {
+            # if not, simply use the older version
+            cmd <- gsub("grass.*\\d", vers[1], cmd)
+        }
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        # load raw Python file
+        py_cmd <- system.file("python", "raw_py_mac.py", package = "RQGIS")
+        py_cmd <- readLines(py_cmd)
+        # change paths if necessary
+        if (osgeo4w_root != "C:\\OSGeo4W64") {
+            py_cmd[11] <- paste0("QgsApplication.setPrefixPath('",
+                                 osgeo4w_root, "\\apps\\qgis'", "True)")
+            py_cmd[15] <- paste0("sys.path.append(r'", osgeo4w_root,
+                                 "\\apps\\qgis\\python\\plugins')")
+        }
+        
+        # load windows batch command
+        cmd <- system.file("win", "init.cmd", package = "RQGIS")
+        cmd <- readLines(cmd)
+        # check osgewo4w_root
+        
+        # check if GRASS path is correct and which version is available on the system
+        vers <- dir(paste0(osgeo4w_root, "\\apps\\grass"))
+        if (length(vers) < 1) {
+            stop("Please install at least one GRASS version under '../OSGeo4W/apps/'!")
+        }
+        # check if grass-7.0.3 is available
+        if (!any(grepl("grass-7.0.3", vers))) {
+            # if not, simply use the older version
+            cmd <- gsub("grass.*\\d", vers[1], cmd)
+        }
+        
+        # return your result
+        list("cmd" = cmd,
+             "py_cmd" = py_cmd)
+    }
+} 
 
 #' @title Building and executing cmd and Python scripts
 #' @description This helper function constructs the batch and Python scripts
@@ -87,9 +128,7 @@ read_cmds <- function(osgeo4w_root = ifelse(Sys.info()["sysname"] == "Windows",
 #' @author Jannes Muenchow
 execute_cmds <- function(processing_name = "",
                          params = "",
-                         osgeo4w_root =
-                           ifelse(Sys.info()["sysname"] == "Windows",
-                                  find_root(), NULL),
+                         osgeo4w_root = find_root(),
                          intern = FALSE) {
 
   if (is.null(osgeo4w_root)) {
@@ -128,168 +167,168 @@ execute_cmds <- function(processing_name = "",
 #' check_apps("C:/OSGeo4W64)
 #' }
 #' @author Jannes Muenchow, Patrick Schratz
-check_apps <- function(osgeo4w_root) {
+check_apps <- function(osgeo4w_root = find_root()) {
     
-    path_apps <- paste0(osgeo4w_root, "/apps")
     
-    # define apps to check
-    apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
-    out <- lapply(apps, function(app) {
-        if (any(grepl(app, dir(path_apps)))) {
-            path <- paste(path_apps, app, sep = "/")
-        }
-        else {
-            path <- NULL
-            txt <- paste0("There is no ", app, "folder in ",
-                          path_apps, ".")
-            ifelse(app %in% c("qgis", "Python27", "Qt4"),
-                   stop(txt, " Please install ", app, 
-                        " using the 'OSGEO4W' advanced installation", 
-                        " routine."),
-                   message(txt, " You might want to install ", app,
-                           " using the 'OSGEO4W' advanced installation", 
-                           " routine."))
-        }
-        gsub("//|\\\\", "/", path)
-    })
-    names(out) <- apps
-    # return your result
-    out
-}
-
-### not functional
-check_apps_mac <- function(gdal = "gdal", grass = "GRASS", msys = "msys", 
-                           Python27 = "python2.7", qgis = "QGIS", qt4 = "qt", 
-                           saga = "saga") {
+    if (Sys.info()["sysname"] == "Windows") {
+        path_apps <- paste0(osgeo4w_root, "/apps")
+        
+        # define apps to check
+        apps <- c("qgis", "Python27", "Qt4", "gdal", "msys", "grass", "saga")
+        out <- lapply(apps, function(app) {
+            if (any(grepl(app, dir(path_apps)))) {
+                path <- paste(path_apps, app, sep = "/")
+            }
+            else {
+                path <- NULL
+                txt <- paste0("There is no ", app, "folder in ",
+                              path_apps, ".")
+                ifelse(app %in% c("qgis", "Python27", "Qt4"),
+                       stop(txt, " Please install ", app, 
+                            " using the 'OSGEO4W' advanced installation", 
+                            " routine."),
+                       message(txt, " You might want to install ", app,
+                               " using the 'OSGEO4W' advanced installation", 
+                               " routine."))
+            }
+            gsub("//|\\\\", "/", path)
+        })
+        names(out) <- apps
+        # return your result
+        out
+    }
     
     if (Sys.info()["sysname"] == "Darwin") {
         
-        # check gdal
-        if (any(grepl(gdal, dir("/usr/local/Cellar")))) {
-            gdal_root <- paste0("/usr/local/Cellar/gdal/",
-                                grep('[0-9]', dir("/usr/local/Cellar/gdal"),
-                                     value = TRUE)[1], "/bin")
-            gdal_root = paste0("GDAL path: ", gdal_root)
-            print(gdal_root)
-        }
-        else {
-            stop("It seems you do not have 'GDAL' installed. Please install
-                 'it on your system!
-                 To do so, execute the following lines in a terminal and follow
-                 the instructions:
-                 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'
-                 2. brew install gdal")
-        }
+        osgeo4w_root = find_root()
+        path_apps <- osgeo4w_root
         
-        # check grass
-        if (any(grepl(grass, dir("/Applications")))) {
-            grass_root <- paste0("/Applications/", grep(grass, dir("/Applications/"),
-                                                        value = TRUE)[1])
-            grass_root = paste0("GRASS path: ", grass_root)
-            print(grass_root)
-        }
-        else {
-            stop("It seems you do not have 'GRASS' installed. Please install
-                 it on your system!
-                 To do so, follow the instructions on this site: 
-                 'https://grass.osgeo.org/download/software/mac-osx/'")
+        all_paths = list()
+        
+        
+        # check gdal
+        gdal = sub('/GdalAlgorithm.py','', system2("find",args='/Applications/QGIS.app/Contents/Resources/python/plugins/processing/algs/gdal -name "GdalAlgorithm.py" -type f -print',stdout=TRUE))
+        
+        if (length(gdal) == 0) {
+            stop("It seems you do not have 'GDAL' installed. Please install it on your system! To do so, execute the following lines in a terminal and follow the instructions: 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)' 2. brew install gdal")
         }
         
         # check python
-        if (any(grepl(Python27, dir("/usr/bin")))) {
-            python_root <- paste0("/usr/bin/", grep(Python27, dir("/usr/bin"),
-                                                    value = TRUE)[1])
-            python_root = paste0("Python path: ", python_root)
-            print(python_root)
-        }
-        else {
+        py = sub('/ProcessingPlugin.py','', system2("find",args='/Applications/QGIS.app/Contents/Resources/python -name "ProcessingPlugin.py" -type f -print',stdout=TRUE))
+        
+        if (length(py) == 0){
             stop("It seems you do not have 'Python 2.7' installed. Please install
                  it on your system!
                  To do so, install the latest Python 2 release from this site:
                  'https://www.python.org/downloads/mac-osx/'")
         }
         
-        # check QGIS
-        if (any(grepl(qgis, dir("/Applications")))) {
-            qgis_root <- paste0("/Applications/", grep(qgis, dir("/Applications/"),
-                                                       value = TRUE)[1])
-            qgis_root = paste0("QGIS path: ", qgis_root)
-            print(qgis_root)
-        }
-        else {
+        # check qgis
+        qgis = sub('/BarPlot.py','', system2("find",args='/Applications/QGIS.app/Contents/Resources/python/plugins/processing/algs/qgis -name "BarPlot.py" -type f -print',stdout=TRUE))
+        
+        if (length(qgis) == 0) {
             stop("It seems you do not have 'QGIS' installed. Please install
                  it on your system!
-                 To do so, follow the instructions on this site:
-                 'https://www.qgis.org/de/site/forusers/download.html'")
+                 To do so, install the latest Python 2 release from this site:
+                 'https://www.python.org/downloads/mac-osx/'")
         }
         
-        # check qt4
-        if (any(grepl(qt4, dir("/usr/local/Cellar")))) {
-            qt4_root <- paste0("/usr/local/Cellar/qt/",
-                               grep('[0-9]', dir("/usr/local/Cellar/qt"),
-                                    value = TRUE)[1], "/bin")
-            qt4_root = paste0("Qt4 path: ", qt4_root)
-            print(qt4_root)
+        
+        # check grass
+        grass = sub('/grass.txt','', system2("find",args='/Applications/QGIS.app/Contents/Resources/python/plugins/processing/algs/grass -name "grass.txt" -type f -print',stdout=TRUE))
+        
+        if (length(grass) == 0) {
+            stop("It seems you do not have 'GRASS' installed. Please install
+                 it on your system!
+                 To do so, install the latest Python 2 release from this site:
+                 'https://www.python.org/downloads/mac-osx/'")
         }
-        else {
+        
+        # check SAGA
+        saga = sub('/SagaUtils.py','', system2("find",args='/Applications/QGIS.app/Contents/Resources/python/plugins/processing/algs/SAGA -name "SagaUtils.py" -type f -print',stdout=TRUE))
+        
+        if (length(saga) == 0) {
+            stop("It seems you do not have 'SAGA' installed. Please install
+                 it on your system!
+                 To do so, install the latest Python 2 release from this site:
+                 'https://www.python.org/downloads/mac-osx/'")
+        }
+        
+        # check Qt4
+        Qt4 = sub('/Qt.so','', system2("find",args='/Applications/QGIS.app/Contents/Resources/python/PyQt4 -name "Qt.so" -type f -print',stdout=TRUE))
+        
+        if (length(Qt4) == 0) {
             stop("It seems you do not have 'Qt4' installed. Please install
                  it on your system!
-                 To do so, execute the following lines in a terminal and follow
-                 the instructions:
-                 1. usr/bin/ruby -e '$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/master/install)'
-                 2. brew install qt4")
+                 To do so, install the latest Python 2 release from this site:
+                 'https://www.python.org/downloads/mac-osx/'")
         }
         
-        }
-    else {
-        stop("It seems you are not running a MAC but either Windows or Linux. 
-             Please use functions according to your system")
-        }
+        
+        all_paths = c(osgeo4w_root, qgis, py, Qt4, gdal, grass, saga)
+        all_paths
     }
+}
+check_apps()
 
 
 set_env <- function(path = NULL) {
     
-    path <- "C:/OSGeo4W64/"
-    
-    if (!is.null(path)) {
-        out <- list(root = path)
-        out <- c(out, check_apps(osgeo4w_root = path))
+    if (Sys.info()["sysname"] == "Windows") {
+        path <- "C:/OSGeo4W64/"
         
+        if (!is.null(path)) {
+            out <- list(root = path)
+            out <- c(out, check_apps(osgeo4w_root = path))
+            
+            
+        } else {
+            # raw command
+            # change to C: drive and (&) list all subfolders of C:
+            # /b bare format (no heading, file sizes or summary)
+            # /s include all subfolders
+            # findstr allows you to use regular expressions
+            raw <- "C: & dir /s /b | findstr"
+            
+            # search QGIS
+            cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
+            tmp <- shell(cmd, intern = TRUE)        
+            # search GRASS
+            cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
+            tmp <- shell(cmd, intern = TRUE)
+            
+            # search msys
+            
+            # look for Python27
+            cmd <- paste(raw, shQuote("Python27$"))
+            shell(cmd, intern = TRUE)
+            
+            # search Qt4
+            
+            # search SAGA
+        }
+        # output should be a list containing paths to
+        # SAGA
+        # QGIS
+        # GRASS
+        # Python27
+        # msys
+        # GDAL
+        # Qt4
         
-    } else {
-        # raw command
-        # change to C: drive and (&) list all subfolders of C:
-        # /b bare format (no heading, file sizes or summary)
-        # /s include all subfolders
-        # findstr allows you to use regular expressions
-        raw <- "C: & dir /s /b | findstr"
-        
-        # search QGIS
-        cmd <- paste(raw, shQuote("bin\\\\qgis.bat$"))
-        tmp <- shell(cmd, intern = TRUE)        
-        # search GRASS
-        cmd <- paste(raw, shQuote("grass-[0-9].*\\bin$"))
-        tmp <- shell(cmd, intern = TRUE)
-        
-        # search msys
-        
-        # look for Python27
-        cmd <- paste(raw, shQuote("Python27$"))
-        shell(cmd, intern = TRUE)
-        
-        # search Qt4
-        
-        # search SAGA
     }
-    # output should be a list containing paths to
-    # SAGA
-    # QGIS
-    # GRASS
-    # Python27
-    # msys
-    # GDAL
-    # Qt4
+    
+    if (Sys.info()["sysname"] == "Darwin") {
+        
+        path <- "/applications/QGIS.app/Contents"
+        
+        if (!is.null(path)) {
+            tmp = check_apps()
+            out <- list(root = path, Python27 = tmp[[2]], Qt4 = tmp[[3]], 
+                        gdal = tmp[[4]], grass = tmp[[5]], saga = tmp[[6]])
+        }
+        
+        out
+    }
     
 }
-
