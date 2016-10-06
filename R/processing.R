@@ -887,9 +887,9 @@ run_qgis <- function(alg = NULL, params = NULL, check_params = TRUE,
                   silent = TRUE
       )
       
-      if (grepl("no features found", attr(test, "condition"))) {
-        stop("The output-file ", fname, " is empty, i.e. it has no features.")
-      }
+      #if (grepl("no features found", attr(test, "condition"))) {
+      #  stop("The output-file ", fname, " is empty, i.e. it has no features.")
+      #}
       
       if (inherits(test, "try-error")) {
         raster::raster(fname)
