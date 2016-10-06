@@ -1,7 +1,8 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
 <!--[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)-->
 [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS)
-[![Build Status](https://travis-ci.org/pat-s/RQGIS.svg?branch=dev)](https://travis-ci.org/pat-s/RQGIS) (master)
+[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) (jannes-m/RQGIS/master)
+[![Build Status](https://travis-ci.org/pat-s/RQGIS.svg?branch=dev)](https://travis-ci.org/pat-s/RQGIS) (pat-s/RQGIS/dev) [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
