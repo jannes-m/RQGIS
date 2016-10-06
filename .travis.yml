@@ -2,10 +2,11 @@
 
 language: r
 cache: packages
+notifications:
+  email:
+    on_success: never
+    on_failure: always
 
-sudo: required
-
-r_packages: roxygen2
 
 
 
