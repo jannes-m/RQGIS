@@ -93,11 +93,16 @@ Recently, Homebrew also supports [GUI installations](https://caskroom.github.io/
 [Follow this link](https://www.qgis.org/en/site/forusers/download.html) for the binary installation. Please make sure to also install GDAL separately, preferably following [this link](http://www.kyngchaos.com/software/frameworks) or using your own package manager (Homebrew, Fink, MacPorts). Note that problems might occur mixing up the binary QGIS installation and framework installations from package managers. 
 
 ## GRASS
-The binary installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
+If you install QGIS 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
+GRASS6 algorithms are deprecated and do not work anymore in QGIS 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
 
-If you use homebrew, please see [this guide](https://grasswiki.osgeo.org/wiki/Compiling_on_MacOSX_using_homebrew) to install GRASS 7x on your system. Right now, some problems might occur trying to link GRASS 7 installations and QGIS.
+Other methods installing GRASS versions are listed here:
 
-A guide how to compile seperately installed GRASS version with QGIS will follow soon. 
+* The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
+
+* If you use homebrew, please see [this guide](https://grasswiki.osgeo.org/wiki/Compiling_on_MacOSX_using_homebrew) to install GRASS 7x on your system. 
+Right now, some problems might occur trying to link standalone GRASS7 installations and QGIS.
+
 
 ## SAGA
 QGIS for Mac comes with a preconfigured SAGA installation and should work out of the box.  
