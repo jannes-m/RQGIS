@@ -114,7 +114,7 @@ execute_cmds <- function(processing_name = "processing.alglist",
     res <- system("batch_cmd.cmd", intern = intern)
   }
   
-  if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] =="Linux")) {
+  if ((Sys.info()["sysname"] == "Darwin") | (Sys.info()["sysname"] == "Linux")) {
     # write batch command
     cmd <- c(cmds$cmd, "/usr/bin/python py_cmd.py")
     cmd <- paste(cmd, collapse = "\n")
