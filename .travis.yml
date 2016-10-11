@@ -11,7 +11,7 @@ before_install:
   - chmod 755 pkg-build.sh
   - ./pkg-build.sh bootstrap
   - cd
-  - wget http://download.osgeo.org/gdal/2.0.1/gdal-2.1.1.tar.gz
+  - wget http://download.osgeo.org/gdal/2.1.1/gdal-2.1.1.tar.gz
   - tar zxf gdal-2.1.1.tar.gz
   - cd gdal-2.1.1
   - ./configure --prefix=/usr
