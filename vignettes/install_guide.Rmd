@@ -96,6 +96,8 @@ Recently, Homebrew also supports [GUI installations](https://caskroom.github.io/
 If you install QGIS 2.16 on your system using `brew cask install qgis`, GRASS7 will work out-of-the-box within QGIS. 
 GRASS6 algorithms are deprecated and do not work anymore in QGIS 2.16 (see this [link](http://gis.stackexchange.com/a/205964/43409)).
 
+Right now, problems linking GRASS6/7 in QGIS 2.14.x might occur. 
+
 Other methods installing GRASS versions are listed here:
 
 * The binary GRASS installation can be found [here](https://grass.osgeo.org/download/software/mac-osx/). 
