@@ -16,11 +16,31 @@ knitr::opts_chunk$set(
 )
 ```
 
-<!--[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)-->
-[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS)  
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) (jannes-m/RQGIS/master)  
+```{r, echo = FALSE}
+description <- readLines("DESCRIPTION")
+version <- gsub(" ", "", gsub("Version:", "", grep("Version:", description, value = TRUE)))
+```
+
+```{r, echo = FALSE}
+description <- readLines("DESCRIPTION")
+rvers <- stringr::str_match(grep("R \\(", description, value = TRUE), "[0-9]{1,4}\\.[0-9]{1,4}\\.[0-9]{1,4}")[1,1]
+```
+
+#### General
 [![Build Status](https://travis-ci.org/pat-s/RQGIS.svg?branch=dev)](https://travis-ci.org/pat-s/RQGIS) (pat-s/RQGIS/dev)
+[![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active)
+[![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS)
+[![minimal R version](https://img.shields.io/badge/R%3E%3D-`r rvers`-6666ff.svg)](https://cran.r-project.org/)
+[![Last-changedate](https://img.shields.io/badge/last%20change-`r gsub('-', '--', Sys.Date())`-yellowgreen.svg)](/commits/master)
+
+#### CRAN
+[![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/oddsratio)](http://cran.r-project.org/package=RQGIS)
 [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS)
+[![Rdoc](http://www.rdocumentation.org/badges/version/RQGIS)](http://www.rdocumentation.org/packages/RQGIS)
+
+#### Github
+[![Github Releases](https://img.shields.io/github/downloads/jannes-m/RQGIS/latest/total.svg)](https://github.com/jannes-m/RQGIS)
+[![packageversion](https://img.shields.io/badge/Package%20version-`r version`-orange.svg?style=flat-square)](commits/master)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->

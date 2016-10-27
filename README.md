@@ -1,8 +1,15 @@
 <!-- README.md is generated from README.Rmd. Please edit that file -->
-<!--[![Travis-CI Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS)-->
-[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/RQGIS)](http://cran.r-project.org/package=RQGIS)
-[![Build Status](https://travis-ci.org/jannes-m/RQGIS.svg?branch=master)](https://travis-ci.org/jannes-m/RQGIS) (jannes-m/RQGIS/master)
-[![Build Status](https://travis-ci.org/pat-s/RQGIS.svg?branch=dev)](https://travis-ci.org/pat-s/RQGIS) (pat-s/RQGIS/dev) [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS)
+#### General
+
+[![Build Status](https://travis-ci.org/pat-s/RQGIS.svg?branch=dev)](https://travis-ci.org/pat-s/RQGIS) (pat-s/RQGIS/dev) [![Project Status: Active – The project has reached a stable, usable state and is being actively developed.](http://www.repostatus.org/badges/latest/active.svg)](http://www.repostatus.org/#active) [![codecov](https://codecov.io/gh/jannes-m/RQGIS/branch/master/graph/badge.svg)](https://codecov.io/gh/jannes-m/RQGIS) [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.0-6666ff.svg)](https://cran.r-project.org/) [![Last-changedate](https://img.shields.io/badge/last%20change-2016--10--27-yellowgreen.svg)](/commits/master)
+
+#### CRAN
+
+[![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/oddsratio)](http://cran.r-project.org/package=RQGIS) [![Downloads](http://cranlogs.r-pkg.org/badges/RQGIS?color=brightgreen)](http://www.r-pkg.org/pkg/RQGIS) [![Rdoc](http://www.rdocumentation.org/badges/version/RQGIS)](http://www.rdocumentation.org/packages/RQGIS)
+
+#### Github
+
+[![Github Releases](https://img.shields.io/github/downloads/jannes-m/RQGIS/latest/total.svg)](https://github.com/jannes-m/RQGIS) [![packageversion](https://img.shields.io/badge/Package%20version-0.1.0.9000-orange.svg?style=flat-square)](commits/master)
 
 <!-- C:\OSGeo4W64\bin\python-qgis -> opens Python!!
 /usr/share/qgis/python/plugins/processing-->
@@ -119,7 +126,6 @@ find_algorithms(search_term = "polygon centroid",
 #> [2] "WARNING: Auth db query exec() FAILED"                                       
 #> [3] "Polygon centroids------------------------------------>qgis:polygoncentroids"
 #> [4] "Polygon centroids------------------------------------>saga:polygoncentroids"
-#> [5] ""
 ```
 
 This gives us two functions we could use. Here, we'll choose the QGIS function named `qgis:polygoncentroids`. Subsequently, we would like to know how we can use it, i.e. which function parameters we need to specify.
@@ -178,7 +184,7 @@ plot(ger)
 plot(out, pch = 21, add = TRUE, bg = "lightblue", col = "black")
 ```
 
-<img src="figures/README-unnamed-chunk-10-1.png" style="display: block; margin: auto;" />
+<img src="figures/README-unnamed-chunk-12-1.png" style="display: block; margin: auto;" />
 
 Of course, this is a very simple example. We could have achieved the same using `sp::coordinates`. To harness the real power of integrating R with a GIS, we will present a second, more complex example. Yet to come in the form of a paper...
 
